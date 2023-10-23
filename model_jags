@@ -1,6 +1,6 @@
 model{
 
-  for (i in 1:N){
+  for (i in 1:49){
 
     model_data[i, 1] ~ dbern(prob[i,1])
     model_data[i, 2] ~ dbern(prob[i,2])
@@ -17,6 +17,24 @@ model{
 
     }
 
+  for (i in 50:100){
+
+    model_data[i, 1] ~ dbern(prob[i,1])
+    model_data[i, 2] ~ dbern(prob[i,2])
+    model_data[i, 3] ~ dbern(prob[i,3])
+    model_data[i, 4] ~ dbern(prob[i,4])
+  
+    
+    prob[i,1] <- prev[i]*Se[1]*Se[2] + (1-prev[i])*(1-Sp[1])*(1-Sp[2])
+    prob[i,2] <- prev[i]*Se[1]*(1-Se[2]) + (1-prev[i])*(1-Sp[1])*Sp[2]
+    prob[i,3] <- prev[i]*(1-Se[1])*Se[2] + (1-prev[i])*Sp[1]*(1-Sp[2])
+    prob[i,4] <- prev[i]*(1-Se[1])*(1-Se[2]) + (1-prev[i])*Sp[1]*Sp[2]
+    
+    prev[i] ~ dbern(p)
+
+    }
+
+
   p ~ dbeta(2,1)
 
 
@@ -26,9 +44,8 @@ model{
   Se[2] ~ dbeta(2, 1)T(1-Sp[2],)
   Sp[2] ~ dbeta(2, 1)
 
-  #data# model_data, N
+
   #monitor# prev, Se, Sp, p
-  #inits# Se, Sp
   #module# lecuyer
   
 }

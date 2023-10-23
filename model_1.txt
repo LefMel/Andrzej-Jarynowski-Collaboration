@@ -1,0 +1,29 @@
+model{
+
+  for (i in 1:2){
+
+    data_1[i, 1:4] ~ dmulti(prob[i,1:4], N1[i])
+    
+    prob[i,1] <- prev[i]*Se[1]*Se[2] + (1-prev[i])*(1-Sp[1])*(1-Sp[2])
+    prob[i,2] <- prev[i]*Se[1]*(1-Se[2]) + (1-prev[i])*(1-Sp[1])*Sp[2]
+    prob[i,3] <- prev[i]*(1-Se[1])*Se[2] + (1-prev[i])*Sp[1]*(1-Sp[2])
+    prob[i,4] <- prev[i]*(1-Se[1])*(1-Se[2]) + (1-prev[i])*Sp[1]*Sp[2]
+    
+    prev[i] ~ dbeta(1,1)
+
+    }
+
+
+
+
+  Se[1] ~ dbeta(2, 1)T(1-Sp[1],)
+  Sp[1] ~ dbeta(2, 1)
+  Se[2] ~ dbeta(2, 1)T(1-Sp[2],)
+  Sp[2] ~ dbeta(2, 1)
+
+
+  #monitor# prev, Se, Sp
+
+  #module# lecuyer
+  
+}
